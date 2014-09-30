@@ -1,0 +1,23 @@
+<h1>First "working" example </h1>
+<p>Still need to find a way to eliminate the "-"<em><%= Time.now.to_s %></em></p>
+<p>You can see an example of using a loop in an ERB file at <a href="/99bottles">/99bottles</a></p>
+
+<form action='/' method="post">
+  <div>
+    <label for="task">TASK:</label>
+    <input type="text" name="task" />
+  </div>
+  <div>
+    <label for="date">DATE:</label>
+    <input type="text" name="date" />
+  </div>
+  <div class="button">
+    <button type="submit" value='Save'>Submit</button>
+  </div>
+</form>
+
+<ul>
+<% @task.each do |line| %>
+<li><%= line + "\n" %></li>
+<% end %>
+</ul>

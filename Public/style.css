@@ -1,0 +1,31 @@
+
+body {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri,
+  sans-serif;
+    background: #3498db;
+    color: #333;
+}
+
+h1 {
+  font-family: "Papayrus"
+}
+
+a:hover {
+  color: red;
+}
+
+.wrapper {
+  width: 70%;
+  margin: 32px auto;
+  background: #ecf0f1;
+  padding 32px;
+  border: 16px solid #2980b9
+}
+
+#boldme {
+  font-weight: bold;
+}
+
+ol {
+  line-heigiht: 2;
+}

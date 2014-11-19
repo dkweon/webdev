@@ -1,5 +1,0 @@
-start
-read - 1/2
-aaa - bbbbbbbbb
-start
-sdfsd - 

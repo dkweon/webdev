@@ -1,23 +1,28 @@
-<h1>First "working" example </h1>
-<p>Still need to find a way to eliminate the "-"<em><%= Time.now.to_s %></em></p>
+<h1>Todo List </h1>
+<p><em><%= Time.now.to_s %></em></p>
 <p>You can see an example of using a loop in an ERB file at <a href="/99bottles">/99bottles</a></p>
 
-<form action='/' method="post">
-  <div>
-    <label for="task">TASK:</label>
-    <input type="text" name="task" />
-  </div>
-  <div>
-    <label for="date">DATE:</label>
-    <input type="text" name="date" />
-  </div>
-  <div class="button">
-    <button type="submit" value='Save'>Submit</button>
-  </div>
+</div>
+<form action='/' method='POST'>
+  <strong>Insert a new Task:</strong>
+  <input type='text' name='task' placeholder='task content' />
+  <input type='text' name='date' placeholder='due date' />
+  <input type='submit' value='Save' class="button" />
+</form>
+<br />
+<form action='/delete' method='POST'>
+  <strong>Delete a Task:</strong>
+  <input type='text' name='task' placeholder='task content' />
+  <input type='submit' value='Save' class="button" />
 </form>
 
 <ul>
-<% @task.each do |line| %>
-<li><%= line + "\n" %></li>
-<% end %>
+  <% @tasks.each do |item| %>
+  <li><span>
+    <%= item.description %>
+    <% unless item.due.blank? %>
+    <%= '- ' + item.due %>
+    <% end %>
+  </span></li>
+  <% end %>
 </ul>

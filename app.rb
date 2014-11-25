@@ -7,30 +7,28 @@ require 'bundler/setup'
 # load all of the gems in the gemfile
 Bundler.require
 
+require './models/TodoItem'
+
+ActiveRecord::Base.establish_connection(
+  :adapter  => 'sqlite3',
+  :database => 'db/development.db',
+  :encoding => 'utf8'
+)
+
+
 # define a route for the root of the site
 get '/' do
-#  line = File.read("todo.txt").split("\n")
-#	@task = line.split("-")
-
-	@task = File.read("todo.txt").split("\n")
-	erb :index
-end
-
-# define another route with some content that's then shown by the view
-get '/99bottles' do
-  # Ruby is fun because you can mix functional programming with imperative programming.
-  # Here we specify a Range from 1 to 99, convert it into an Array, reverse the Array order,
-  # then map a block to the Array that converts each Integer into a String using ruby string
-  # interpolation (the #{} stuff)
-  @lyrics = (1..99).to_a.reverse.map {|i| "#{i} bottles of beer on the wall, #{i} bottles of beer. Take one down, pass it around, #{i-1} bottles of beer on the wall."}
-  # renter the views/bottles.erb template
-  erb :bottles
+  @tasks = TodoItem.all.order(:due)
+  erb :index
 end
 
 post '/' do
- File.open("todo.txt", "a") do |file|
-    file.puts "#{params[:task]} - #{params[:date]}"
-		@task = [:task, :date]
-  end
-	redirect "/"
+  TodoItem.create(description: params[:task], due: params[:date])
+  redirect '/'
+end
+
+
+post '/delete' do
+  TodoItem.find_by(description: params[:task]).destroy
+  redirect '/'
 end

@@ -1,0 +1,29 @@
+<h1>Todo List </h1>
+<p><em><%= Time.now.to_s %></em></p>
+<p>You can see an example of using a loop in an ERB file at <a href="/99bottles">/99bottles</a></p>
+
+</div>
+<form action='/<%=@user.name%>' method='POST'>
+  <strong>Insert a new Task:</strong>
+  <input type='text' name='task' placeholder='task content' />
+  <input type='text' name='date' placeholder='due date' />
+  <input type='submit' value='Save' class="button" />
+</form>
+<br />
+
+<ul>
+  <% @tasks.each do |item| %>
+  <form action='/<%= @user.name %>/delete/<%= task.id %>'>
+    <input type='submit' value='Delete' />
+  </form>
+
+  <li><span>
+    <%= item.description %>
+    <% unless item.due.blank? %>
+    <%= '- ' + item.due %>
+    <% end %>
+  </span></li>
+  <% end %>
+</ul>
+
+<a href= '/'>Back</a>

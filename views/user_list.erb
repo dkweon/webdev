@@ -1,0 +1,22 @@
+<h1>User List </h1>
+<p><em><%= Time.now.to_s %></em></p>
+<p>You can see an example of using a loop in an ERB file at <a href="/99bottles">/99bottles</a></p>
+
+
+<form action='/' method='POST'>
+  <strong>New User ID:</strong>
+  <input type='text' name='id' placeholder='user name' />
+  <input type='submit' value='Save' class="button" />
+</form>
+
+<div>
+  <% @user.each do |name| %>
+  <form action ='/<%= user.name %>/delete'>
+    <input type ='submit' value='Delete'>
+  </form>
+  <a href='/<%= user.name %>'> <%= user.name %> </a>
+  <% end %>
+</div> 
+
+
+<!-- what is someone creates same id...? -->

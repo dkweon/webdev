@@ -8,6 +8,7 @@ require 'bundler/setup'
 Bundler.require
 
 require './models/TodoItem'
+require './models/Users'
 
 if ENV['DATABASE_URL']
   ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
@@ -22,18 +23,40 @@ end
 
 
 # define a route for the root of the site
+
+#user
 get '/' do
-  @tasks = TodoItem.all.order(:due)
-  erb :index
+  @user = Users.all.order(:name)
+  erb :user_list
 end
 
 post '/' do
+  Users.create(name: params[:name])
+  redirect '/'
+end
+
+#todo list
+
+get '/:name' do
+  @user = Users.find(params[:name])
+  @tasks = @user.todo_items.order(:due)
+  erb :todo_list
+end
+
+post '/:name' do
+  userID = Users.findby(name: params[:name]).id
   TodoItem.create(description: params[:task], due: params[:date])
+  redirect "/#{params[:name]}"
+end
+
+#deleting user and list "items"
+get '/:name/delete' do
+  Users.find_by(name: params[:name]).destroy
   redirect '/'
 end
 
 
-post '/delete' do
-  TodoItem.find_by(description: params[:task]).destroy
-  redirect '/'
+get '/:name/delete/:id' do
+  TodoItem.find_by(id: params[:id]).destroy
+  redirect "/#{params[:name]}"
 end

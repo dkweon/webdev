@@ -6,3 +6,5 @@ class CreateTodoItems < ActiveRecord::Migration
     end
   end
 end
+
+#modify for lab 6

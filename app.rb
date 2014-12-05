@@ -8,7 +8,7 @@ require 'bundler/setup'
 Bundler.require
 
 require './models/TodoItem'
-require './models/Users'
+require './models/User'
 
 if ENV['DATABASE_URL']
   ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
@@ -20,43 +20,65 @@ else
   )
 end
 
+enable :sessions
+set :session_secret, '85txrIIvTDe0AWPCvbeXuXXpULCWZgpoRo1LqY8YsR9GAbph0jfOHosvtY4QFxi6'
 
+before do
+  @user = User.find_by(name: session[:name])
+end
 
-# define a route for the root of the site
-
-#user
 get '/' do
-  @user = Users.all.order(:name)
-  erb :user_list
+  if @user
+    @tasks = @user.todo_items.order(:due)
+    erb :index
+  else
+    erb :login
+  end
 end
 
-post '/' do
-  Users.create(name: params[:name])
+post '/login' do
+  user = User.find_by(name: params[:name])
+  if user.nil?
+    @message = "User not found."
+    erb :message
+  elsif user.authenticate(params[:password])
+    session[:name] = user.name
+    redirect '/'
+  else
+
+    @message = "Incorrect password."
+    erb :message
+  end
+end
+
+get '/logout' do
+  session.clear
   redirect '/'
 end
 
-#todo list
-
-get '/:name' do
-  @user = Users.find(params[:name])
-  @tasks = @user.todo_items.order(:due)
-  erb :todo_list
+post '/new_user' do
+  @user = User.create(params)
+  if @user.valid?
+    session[:name] = @user.name
+    redirect '/'
+  else
+    @message = @user.errors.full_messages.join(', ')
+    erb :message
+  end
 end
 
-post '/:name' do
-  userID = Users.findby(name: params[:name]).id
-  TodoItem.create(description: params[:task], due: params[:date])
-  redirect "/#{params[:name]}"
+post '/new_item' do
+  @user.todo_items.create(description: params[:task], due: params[:date])
+  redirect "/"
 end
-
-#deleting user and list "items"
-get '/:name/delete' do
-  Users.find_by(name: params[:name]).destroy
+get '/delete_user' do
+  @user.destroy
   redirect '/'
 end
 
-
-get '/:name/delete/:id' do
-  TodoItem.find_by(id: params[:id]).destroy
-  redirect "/#{params[:name]}"
+get '/delete_item/:item' do
+  @todo_item = TodoItem.find(params[:item])
+  @user = @todo_item.user
+  @todo_item.destroy
+  redirect "/"
 end

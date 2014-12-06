@@ -20,65 +20,43 @@ else
   )
 end
 
-enable :sessions
-set :session_secret, '85txrIIvTDe0AWPCvbeXuXXpULCWZgpoRo1LqY8YsR9GAbph0jfOHosvtY4QFxi6'
-
-before do
-  @user = User.find_by(name: session[:name])
-end
-
 get '/' do
-  if @user
-    @tasks = @user.todo_items.order(:due)
-    erb :index
-  else
-    erb :login
-  end
+  @users = User.all.order(:name)
+  erb :user_list
 end
 
-post '/login' do
-  user = User.find_by(name: params[:name])
-  if user.nil?
-    @message = "User not found."
-    erb :message
-  elsif user.authenticate(params[:password])
-    session[:name] = user.name
-    redirect '/'
-  else
 
-    @message = "Incorrect password."
-    erb :message
-  end
-end
-
-get '/logout' do
-  session.clear
-  redirect '/'
+get '/:user' do
+  @user = User.find(params[:user])
+  @tasks = @user.todo_items.order(:due)
+  erb :index
 end
 
 post '/new_user' do
   @user = User.create(params)
-  if @user.valid?
-    session[:name] = @user.name
-    redirect '/'
-  else
-    @message = @user.errors.full_messages.join(', ')
-    erb :message
-  end
-end
-
-post '/new_item' do
-  @user.todo_items.create(description: params[:task], due: params[:date])
-  redirect "/"
-end
-get '/delete_user' do
-  @user.destroy
   redirect '/'
 end
 
-get '/delete_item/:item' do
+get '/delete_user/:user' do
+  User.find(params[:user]).destroy
+  redirect '/'
+end
+
+post '/:user/new_item' do
+  User.find(params[:user]).todo_items.create(description: params[:description], due: params[:due])
+  redirect "/#{params[:user]}"
+end
+
+
+post '/delete_item/:item' do
   @todo_item = TodoItem.find(params[:item])
   @user = @todo_item.user
   @todo_item.destroy
-  redirect "/"
+  redirect "/#{@user.id}"
+end
+
+helpers do
+  def blank?(x)
+    x.nil? || x == ""
+  end
 end

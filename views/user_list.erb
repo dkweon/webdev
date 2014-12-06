@@ -1,22 +1,20 @@
-<h1>User List </h1>
-<p><em><%= Time.now.to_s %></em></p>
-<p>You can see an example of using a loop in an ERB file at <a href="/99bottles">/99bottles</a></p>
-
-
-<form action='/' method='POST'>
-  <strong>New User ID:</strong>
-  <input type='text' name='id' placeholder='user name' />
-  <input type='submit' value='Save' class="button" />
-</form>
-
-<div>
-  <% @user.each do |name| %>
-  <form action ='/<%= user.name %>/delete'>
-    <input type ='submit' value='Delete'>
-  </form>
-  <a href='/<%= user.name %>'> <%= user.name %> </a>
-  <% end %>
-</div> 
-
-
-<!-- what is someone creates same id...? -->
+<h1>Users</h1>
+<div class="list-group">
+<% @users.each do |user| %>
+<div class="list-group-item">
+  <a href='/delete_user/<%= user.id %>' class="button">Delete</span></a>
+  <a href='/<%= user.id %>'><%= user.name %></a>
+</div>
+<% end %>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <h4 class="list-group-item-heading">New User:</h4>
+    <form class="form-inline" action='/new_user' method='POST'>
+      <div class="form-group">
+        <input class="form-control" type='text' name='name' placeholder='username' />
+      </div>
+      <button type='submit' class="button">Save</button>
+    </form>
+  </div>
+</div>

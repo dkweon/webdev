@@ -1,19 +1,8 @@
-<h1>Todo List </h1>
-<p><em><%= Time.now.to_s %></em></p>
 
-</div>
-<form action='/' method='POST'>
-  <strong>Insert a new Task:</strong>
-  <input type='text' name='task' placeholder='task content' />
-  <input type='text' name='date' placeholder='due date' />
-  <input type='submit' value='Save' class="button" />
-</form>
-<br />
-<form action='/delete' method='POST'>
-  <strong>Delete a Task:</strong>
-  <input type='text' name='task' placeholder='task content' />
-  <input type='submit' value='Save' class="button" />
-</form>
+<h1><center><%= @user.name %>'s Todo List </center></h1>
+<p><em><center><%= Time.now.to_s %></center></em></p>
+
+<div align=center>
 
 <ul>
   <% @tasks.each do |item| %>
@@ -23,5 +12,30 @@
     <%= '- ' + item.due %>
     <% end %>
   </span></li>
-  <% end %>
+
+    <form action='/delete_item/<%= item.id %>' method='POST'>
+      <strong>Delete a Task:</strong>
+      <input type='text' name='task' placeholder='task content' />
+      <input type='submit' value='Save' class="button" />
+    </form>
 </ul>
+</div>
+<% end %>
+
+
+<div align=center>
+<form action='/<%= @user.id %>/new_item' method='POST'>
+  <strong>Insert a new Task:</strong>
+  <input type='text' name='description' placeholder='task content' />
+  <input type='text' name='due' placeholder='due date' />
+  <input type='submit' value='Save' class="button" />
+</form>
+</div>
+
+<br />
+
+
+
+<p>
+  <a href="/">back</a>
+</p>
